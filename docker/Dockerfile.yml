@@ -1,0 +1,21 @@
+FROM node:latest
+COPY ./tpt/docker/javascript /javascript
+
+RUN echo "**** apt  *****"
+RUN apt update
+RUN apt install -y  nginx  
+ 
+RUN cd /javascript
+
+RUN echo "**** npm install*****"
+RUN npm install
+RUN npm i -g @angular/cli
+
+RUN mkdir -p /var/www/html/
+
+RUN echo "**** ls *****"
+
+RUN npm run build -- --output-path=/var/www/html/
+
+
+CMD ["nginx", "-g", "daemon off;"]

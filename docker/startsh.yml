@@ -1,0 +1,5 @@
+
+#!/bin/bash
+#Используется для запуска Docker
+docker build --tag hi:world  .
+docker run -t -p  80:80 hi:world 
