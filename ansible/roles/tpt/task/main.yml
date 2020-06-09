@@ -1,0 +1,71 @@
+---
+
+- name: Ensure that packages are installed
+
+  apt:
+
+    name: "{{ item }}"
+
+    state: present
+
+    update_cache: yes
+
+  with_items: "{{ packages }}"
+
+
+
+- name: Ensure that services are running
+
+  service:
+
+    name: "{{ item }}"
+
+    state: started
+
+    enabled: yes
+
+  with_items: "{{ services }}"
+
+
+
+- name: Ensure that directory is created
+
+  file:
+
+    path: "{{ dir }}"
+
+    state: directory
+
+
+
+- name: Ensure that 1.txt is present
+
+  template:
+
+    src: "{{ file }}"
+
+    dest: "{{ dir }}/{{ file }}"
+
+
+
+# - name: Ensure that file is modified
+
+#  lineinfile:
+
+#    path: "{{ dir }}/{{ file }}"
+
+#    line: "{{ line }}"
+
+
+
+- name: Ensure that DB user is created
+
+  mysql_user:
+
+    name: "{{ db_user }}"
+
+    password: "{{ db_pass }}"
+
+    priv: "*.*:ALL"
+
+    state: present
