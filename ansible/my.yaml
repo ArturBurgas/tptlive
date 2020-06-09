@@ -1,0 +1,90 @@
+---
+- hosts: webservers
+  vars:
+    http_port: 80
+    max_clients: 200
+  remote_user: root
+  tasks:
+  - name: ensure apache is at the latest version
+    yum:
+      name: httpd
+      state: latest
+  - name: write the apache config file
+    template:
+      src: /srv/httpd.j2
+      dest: /etc/httpd.conf
+    notify:
+    - restart apache
+  - name: ensure apache is running
+    service:
+      name: httpd
+      state: started
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+        
+# -------------
+# Remote users can also be defined per task:
+
+---
+- hosts: webservers
+  remote_user: root
+  tasks:
+    - name: test connection
+      ping:
+      remote_user: yourname
+      
+      
+# Support for running things as another user is also available  
+
+---
+- hosts: webservers
+  remote_user: yourname
+  become: yes
+  
+# You can also use keyword become on a particular task instead of the whole play:
+
+---
+- hosts: webservers
+  remote_user: yourname
+  tasks:
+    - service:
+        name: nginx
+        state: started
+      become: yes
+      become_method: sudo
+      
+# You can also login as you, and then become a user different than root:
+
+---
+- hosts: webservers
+  remote_user: yourname
+  become: yes
+  become_user: postgres
+  
+  
+# You can also use other privilege escalation methods, like su:
+
+---
+- hosts: webservers
+  remote_user: yourname
+  become: yes
+  become_method: su
+  
+  
+# If you need to specify a password for sudo, run ansible-playbook with --ask-become-pass or -K. If you run a playbook utilizing become and the playbook seems to hang, it’s probably stuck at the privilege escalation prompt and can be stopped using Control-C, allowing you to re-execute the playbook adding the appropriate password.
+
+
+# You can also control the order in which hosts are run. The default is to follow the order supplied by the inventory:
+
+
+- hosts: all
+  order: sorted
+  gather_facts: False
+  tasks:
+    - debug:
+        var: inventory_hostname
+        
+# inventory, reverse_inventory, sorted, reverse_sorted, shuffle
