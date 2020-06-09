@@ -1,0 +1,38 @@
+
+---
+
+file: 1.txt
+
+dir: /home/user/lesson
+
+line: "Hello!"
+
+
+
+packages:
+
+  - nginx
+
+  - vim
+
+  - git
+
+  - mysql-server
+
+  - mysql-client
+
+  # - mysql
+
+
+
+services:
+
+  - nginx
+
+  - mysql
+
+
+
+db_user: username
+
+db_pass: password
